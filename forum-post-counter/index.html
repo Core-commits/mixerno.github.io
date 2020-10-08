@@ -1,0 +1,234 @@
+<html>
+
+<head>
+    <title>Brick-hill.live | Forum Post Counter</title>
+    <meta name="description" content="Brick-hill.live | Forum Post Counter">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179018182-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-179018182-1');
+    </script>
+    <script async src="https://arc.io/widget.js#jnEJG9ET"></script>
+    <script src="../jquery-3.1.1.min.js"></script>
+    <script src="../odometer.js"></script>
+    <link rel="stylesheet" href="../odometer.css">
+    <script src="../bootstrap.js"></script>
+    <link rel="stylesheet" href="../bootstrap.css">
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+
+
+</head>
+
+<body>
+    <div class="navigation-bar">
+        <button><span><a href="https://brick-hill.live">Brick-hill.live</a></span></button>
+    </div><br>
+    <center>
+        <div class="CounterBox">
+            <div style="font-size: 30px !important;">Forum Posts</div><br>
+            <div style="font-size: 100px !important;" id="forum-post-count" class="odometer">0</div>
+            <div style="width: 100%;" class="chart" id="example"></div>
+        </div>
+    </center>
+
+
+</body>
+<style>
+    @font-face {
+        font-family: Varela Round;
+        src: url(https://mixerno.space/fonts/VarelaRound-Regular.ttf);
+    }
+
+    body {
+        margin: 0;
+        background-color: rgb(41, 43, 44);
+        font-family: Varela Round;
+        color: black;
+        font-weight: 500 !important;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+        font-weight: 500;
+        text-align: center;
+        font-size: 50px;
+    }
+
+    .navigation-bar {
+        display: table;
+        background-color: rgb(0, 0, 0);
+        color: black;
+        height: 40px;
+        width: 100%;
+    }
+
+    .navigation-bar button,
+    .navigation-bar span {
+        vertical-align: middle;
+        width: 50%;
+        font-size: 20px;
+        font-family: Varela Round;
+        border-radius: 0%;
+        border: solid 20px;
+        border-color: rgba(0, 0, 0, 0);
+        background-color: rgb(0, 0, 0);
+        color: white;
+        transition: 1s;
+    }
+
+    .navigation-bar span:hover {
+        background-color: rgb(33, 33, 33);
+        border: solid 0px;
+        border-color: rgb(66, 66, 66);
+        cursor: pointer;
+    }
+
+    a {
+        text-decoration: none;
+        color: white;
+        transition: 0.3s;
+    }
+
+    a:hover {
+        text-decoration: blue !important;
+        color: royalblue;
+    }
+
+    .CounterBox {
+        width: 90%;
+        background-color: rgb(32, 32, 32) !important;
+        border: solid gray;
+        border-radius: 0.25em;
+        border-width: 1px;
+        display: inline-block;
+        overflow: hidden;
+        padding: 10px;
+        margin: 1px;
+
+    }
+
+    .graphbox {
+        width: 90%;
+        background-color: white;
+        border: solid gray;
+        border-radius: 0.25em;
+        border-width: 1px;
+        display: inline-block;
+        overflow: hidden;
+        padding: 10px;
+        margin: 1px;
+
+    }
+
+    .CounterBox a {
+        font-family: Varela Round;
+        font-weight: 100;
+        border: solid blue;
+        border-width: 1px;
+        border-radius: 0.25em;
+        color: blue;
+        transition: 0.3s;
+        font-size: 3vh;
+        padding: 5px;
+    }
+
+    .CounterBox div {
+        font-family: Varela Round;
+        font-weight: 400;
+        color: white;
+    }
+
+    .CounterBox a:hover {
+        border: solid blue;
+        background-color: blue;
+        border-width: 1px;
+        border-radius: 0.25em;
+        color: white;
+        transition: 0.3s;
+
+    }
+</style>
+<script>
+    var deta = 0;
+    var checktime = 10000;
+    window.onload = function () {
+        get()
+        function get() {
+
+            fetch('https://cors.mixerno.space/https://www.brick-hill.com/forum/').then(res => res.text()).then(data => {
+                var count1 = 0;
+                /*$($(data).find('div.number-table-main')[0]).text().replace(/,/g, "");*/
+                for (var i = 0; i < $(data).find('span.title').length; i++) {
+                    count1 = count1 + parseFloat($($(data).find('span.title')[0]).text());
+                }
+                document.querySelector('.odometer').innerHTML = count1
+                deta = count1;
+                chaart()
+            })
+        }
+        setInterval(get, checktime);
+        function chaart() {
+            var layout = {
+                plot_bgcolor: "rgba(0,0,0,0)",
+                paper_bgcolor: "rgba(0,0,0,0)",
+                title: {
+                    text: '',
+                    font: {
+                        family: 'Varela Round',
+                        color: '#ffffff'
+                    },
+                    xref: 'paper',
+                    x: 0.05,
+                },
+                font: {
+                    family: 'Varela Round',
+                    color: '#ffffff'
+                },
+                xaxis: {
+                    title: {
+                        text: '',
+                        font: {
+                            family: 'Varela Round',
+                            color: '#ffffff'
+                        }
+                    },
+                    font: {
+                        family: 'Varela Round',
+                        color: '#ffffff'
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: '',
+                        font: {
+                            family: 'Varela Round',
+                            color: '#ffffff'
+                        }
+                    },
+                    font: {
+                        family: 'Varela Round',
+                        color: '#ffffff'
+                    }
+                }
+            };
+            Plotly.plot('example', [{
+                x: [new Date()],
+                y: [deta],
+                type: 'spline',
+                title: ''
+            }], layout);
+            Plotly.extendTraces('example', { x: [[new Date()]], y: [[deta]] }, [0]);
+            Plotly.deleteTraces('example', [1]);
+
+        }
+
+    }
+</script>
+
+</html>
