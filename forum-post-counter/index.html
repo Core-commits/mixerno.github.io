@@ -204,7 +204,7 @@
         get()
         function get() {
 
-            fetch('https://cors.mixerno.space/https://www.brick-hill.com/forum/').then(res => res.text()).then(data => {
+            fetch('https://api.brick-hill.live/forums').then(res => res.text()).then(data => {
                 var count1 = 0;
                 count1 = count1 + parseFloat($($(data).find('.col-4-12 .card .content .thread div div a')[0]).attr("href").split('/')[3]);
                 console.log($($(data).find('.col-4-12 .card .content .thread div div a')[0]).attr("href").split('/')[3])
