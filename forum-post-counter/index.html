@@ -18,7 +18,8 @@
     <link rel="stylesheet" href="../odometer.css">
     <script src="../bootstrap.js"></script>
     <link rel="stylesheet" href="../bootstrap.css">
-    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
 
 
 </head>
@@ -155,76 +156,73 @@
     }
 </style>
 <script>
+    var graphData;
+    $(document).ready(function () {
+        graphData = new Highcharts.chart('example', {
+            chart: {
+                backgroundColor: 'transparent',
+                renderTo: example,
+                type: 'spline'
+            },
+            title: {
+                text: ``
+            },
+            xAxis: {
+                labels: {
+                    color: "white"
+                },
+                type: 'datetime',
+                tickPixelInterval: 500,
+            },
+            yAxis: {
+                labels: {
+                    color: "white"
+                },
+                title: {
+                    text: ''
+                },
+            },
+
+            credits: {
+                enabled: false,
+                text: "Brick-hill.live"
+            },
+
+            series: [{
+                showInLegend: false,
+                name: 'Threads',
+                marker: {
+                    enabled: false
+                },
+
+            }]
+        })
+    });
     var deta = 0;
-    var checktime = 10000;
+    var checktime = 5000;
     window.onload = function () {
         get()
         function get() {
 
             fetch('https://cors.mixerno.space/https://www.brick-hill.com/forum/').then(res => res.text()).then(data => {
                 var count1 = 0;
-                /*$($(data).find('div.number-table-main')[0]).text().replace(/,/g, "");*/
-                for (var i = 0; i < $(data).find('span.title').length; i++) {
-                    count1 = count1 + parseFloat($($(data).find('span.title')[0]).text());
-                }
+                count1 = count1 + parseFloat($($(data).find('.col-4-12 .card .content .thread div div a')[0]).attr("href").split('/')[3]);
+                console.log($($(data).find('.col-4-12 .card .content .thread div div a')[0]).attr("href").split('/')[3])
+                console.log(count1)
                 document.querySelector('.odometer').innerHTML = count1
                 deta = count1;
-                chaart()
+                chaart(deta)
             })
         }
         setInterval(get, checktime);
-        function chaart() {
-            var layout = {
-                plot_bgcolor: "rgba(0,0,0,0)",
-                paper_bgcolor: "rgba(0,0,0,0)",
-                title: {
-                    text: '',
-                    font: {
-                        family: 'Varela Round',
-                        color: '#ffffff'
-                    },
-                    xref: 'paper',
-                    x: 0.05,
-                },
-                font: {
-                    family: 'Varela Round',
-                    color: '#ffffff'
-                },
-                xaxis: {
-                    title: {
-                        text: '',
-                        font: {
-                            family: 'Varela Round',
-                            color: '#ffffff'
-                        }
-                    },
-                    font: {
-                        family: 'Varela Round',
-                        color: '#ffffff'
-                    }
-                },
-                yaxis: {
-                    title: {
-                        text: '',
-                        font: {
-                            family: 'Varela Round',
-                            color: '#ffffff'
-                        }
-                    },
-                    font: {
-                        family: 'Varela Round',
-                        color: '#ffffff'
-                    }
-                }
-            };
-            Plotly.plot('example', [{
-                x: [new Date()],
-                y: [deta],
-                type: 'spline',
-                title: ''
-            }], layout);
-            Plotly.extendTraces('example', { x: [[new Date()]], y: [[deta]] }, [0]);
-            Plotly.deleteTraces('example', [1]);
+        function chaart(count) {
+            graphData.series[0].addPoint([
+                (new Date()).getTime(),
+                parseFloat(count)
+            ]);
+            if (graphData.series[0].data.length >= 3600/(checktime/1000)) {
+                graphData.series[0].data[0].remove()
+            }
 
         }
 
