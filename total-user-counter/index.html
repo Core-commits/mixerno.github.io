@@ -1,8 +1,8 @@
 <html>
 
 <head>
-    <title>Brick Hill Live</title>
-    <meta name="description" content="Best way of checking statistics from Brick-hill.com">
+    <title>Brick Hill Live | Total User Counter</title>
+    <meta name="description" content="Brick-hill.live | Total User Counter">
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179018182-1"></script>
     <script>
@@ -13,12 +13,13 @@
         gtag('config', 'UA-179018182-1');
     </script>
     <script async src="https://arc.io/widget.js#jnEJG9ET"></script>
-    <script src="jquery-3.1.1.min.js"></script>
-    <script src="odometer.js"></script>
-    <link rel="stylesheet" href="odometer.css">
-    <script src="bootstrap.js"></script>
-    <link rel="stylesheet" href="bootstrap.css">
+    <script src="../jquery-3.1.1.min.js"></script>
+    <script src="../odometer.js"></script>
+    <link rel="stylesheet" href="../odometer.css">
+    <script src="../bootstrap.js"></script>
+    <link rel="stylesheet" href="../bootstrap.css">
     <link rel="shortcut icon" href="https://media.discordapp.net/attachments/720017621478670337/764196177360453662/Untitled_1.png?width=382&height=382" type="image/x-icon">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
 
 
 </head>
@@ -29,9 +30,9 @@
     </div><br>
     <center>
         <div class="CounterBox">
-            <h1>Counters</h1>
-            <a href="forum-post-counter">Live Forum Post Counter</a>
-            <a href="total-user-counter">Live Total User Counter</a>
+            <div style="font-size: 30px !important;">Users</div><br>
+            <div style="font-size: 100px !important;" id="forum-post-count" class="odometer">0</div>
+            <div style="width: 100%;" class="chart" id="example"></div>
         </div>
     </center>
 
@@ -58,7 +59,6 @@
         font-weight: 500;
         text-align: center;
         font-size: 50px;
-        color: white;
     }
 
     .navigation-bar {
@@ -84,7 +84,7 @@
     }
 
     .navigation-bar span:hover {
-        background-color: rgb(0, 0, 0);
+        background-color: rgb(33, 33, 33);
         border: solid 0px;
         border-color: rgb(66, 66, 66);
         cursor: pointer;
@@ -97,7 +97,7 @@
     }
 
     a:hover {
-        text-decoration: royalblue !important;
+        text-decoration: blue !important;
         color: royalblue;
     }
 
@@ -130,10 +130,10 @@
     .CounterBox a {
         font-family: Varela Round;
         font-weight: 100;
-        border: solid royalblue;
+        border: solid blue;
         border-width: 1px;
         border-radius: 0.25em;
-        color: royalblue;
+        color: blue;
         transition: 0.3s;
         font-size: 3vh;
         padding: 5px;
@@ -146,8 +146,8 @@
     }
 
     .CounterBox a:hover {
-        border: solid royalblue;
-        background-color: royalblue;
+        border: solid blue;
+        background-color: blue;
         border-width: 1px;
         border-radius: 0.25em;
         color: white;
@@ -156,7 +156,76 @@
     }
 </style>
 <script>
+    var graphData;
+    $(document).ready(function () {
+        graphData = new Highcharts.chart('example', {
+            chart: {
+                backgroundColor: 'transparent',
+                renderTo: example,
+                type: 'spline'
+            },
+            title: {
+                text: ``
+            },
+            xAxis: {
+                labels: {
+                    color: "white"
+                },
+                type: 'datetime',
+                tickPixelInterval: 500,
+            },
+            yAxis: {
+                labels: {
+                    color: "white"
+                },
+                title: {
+                    text: ''
+                },
+            },
 
+            credits: {
+                enabled: false,
+                text: "Brick-hill.live"
+            },
+
+            series: [{
+                showInLegend: false,
+                name: 'Users',
+                marker: {
+                    enabled: false
+                },
+
+            }]
+        })
+    });
+    var deta = 0;
+    var checktime = 5000;
+    window.onload = function () {
+        get()
+        function get() {
+
+            fetch('https://api.brick-hill.live/totalusercount').then(res => res.text()).then(data => {
+                var count1 = 0;
+                count1 = count1 + parseFloat($($(data).find('div.bar-2 span b')[0]).attr("title").replace(/,/g, ''));
+                console.log(count1)
+                document.querySelector('.odometer').innerHTML = count1
+                deta = count1;
+                chaart(deta)
+            })
+        }
+        setInterval(get, checktime);
+        function chaart(count) {
+            graphData.series[0].addPoint([
+                (new Date()).getTime(),
+                parseFloat(count)
+            ]);
+            if (graphData.series[0].data.length >= 3600/(checktime/1000)) {
+                graphData.series[0].data[0].remove()
+            }
+
+        }
+
+    }
 </script>
 
 </html>
